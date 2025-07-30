@@ -1,0 +1,177 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Login Basic - Pages | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+    <meta name="description" content="" />
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="../assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="../assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="../assets/css/demo.css" />
+    <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="../assets/vendor/css/pages/page-auth.css" />
+    <script src="../assets/vendor/js/helpers.js"></script>
+
+    <style>
+        .error-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1055;
+            min-width: 300px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="alert alert-danger alert-dismissible error-alert" role="alert" id="errorToast">
+        <i class="bx bx-error-circle me-2"></i>
+        <span id="errorMessage">Hatalı e-posta veya parola! Lütfen tekrar deneyiniz.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="container-xxl">
+        <div class="authentication-wrapper authentication-basic container-p-y">
+            <div class="authentication-inner">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Logo -->
+                        <div class="app-brand demo">
+                            <a class="app-brand-link">
+                                <span class="app-brand-logo demo">
+                                    <img src="../assets/img/icons/brands/images.png?v=2" style="width: 50px; height: 50px;">
+                                </span>
+                                <span class="app-brand-text demo menu-text fw-bolder ms-2">Staj Projem</span>
+                            </a>
+
+                            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                                <i class="bx bx-chevron-left bx-sm align-middle"></i>
+                            </a>
+                        </div>
+                        <!-- /Logo -->
+                        <form id="formAuthentication" class="mb-3">
+                            <div class="mb-3">
+                                <label for="EPosta" class="form-label">E-Posta Adresi</label>
+                                <input type="email"
+                                       class="form-control"
+                                       id="EPosta"
+                                       name="EPosta"
+                                       placeholder="E-Posta adresinizi giriniz"
+                                       autofocus required />
+                            </div>
+                            <div class="mb-3 form-password-toggle">
+                                <div class="d-flex justify-content-between">
+                                    <label class="form-label" for="Parola">Parola</label>
+                                </div>
+                                <div class="input-group input-group-merge">
+                                    <input type="password"
+                                           id="Parola"
+                                           class="form-control"
+                                           name="Parola"
+                                           placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                           required />
+                                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button class="btn btn-primary d-grid w-100" type="submit" id="loginBtn">
+                                    <span id="loginText">Giriş Yap</span>
+                                    <span id="loginSpinner" class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
+                                </button>
+                            </div>
+                        </form>
+                        <form id="formAuthentication2" class="mb-3" action="/Home/Signin" method="GET">
+                            <div class="mb-3">
+                                <button class="btn btn-secondary d-grid w-100" type="submit">Hesap Oluştur</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../assets/vendor/libs/popper/popper.js"></script>
+    <script src="../assets/vendor/js/bootstrap.js"></script>
+    <script src="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="../assets/vendor/js/menu.js"></script>
+
+    <script>
+        function showErrorToast(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorToast').style.display = 'block';
+
+            setTimeout(function() {
+                document.getElementById('errorToast').style.display = 'none';
+            }, 5000);
+        }
+
+        document.getElementById('formAuthentication').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const eposta = document.getElementById('EPosta').value;
+            const parola = document.getElementById('Parola').value;
+
+            if (!eposta || !parola) {
+                showErrorToast('Lütfen e-posta ve parola alanlarını doldurun.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('EPosta', eposta);
+            formData.append('Parola', parola);
+
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginSpinner = document.getElementById('loginSpinner');
+
+            loginBtn.disabled = true;
+            loginText.textContent = 'Giriş yapılıyor...';
+            loginSpinner.classList.remove('d-none');
+
+            fetch('/Home/LoginAjax', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loginBtn.disabled = false;
+                loginText.textContent = 'Giriş Yap';
+                loginSpinner.classList.add('d-none');
+
+                if (data.success) {
+                    window.location.href = '/Home/Index';
+                } else {
+                    showErrorToast(data.message);
+                }
+            })
+            .catch(error => {
+                loginBtn.disabled = false;
+                loginText.textContent = 'Giriş Yap';
+                loginSpinner.classList.add('d-none');
+
+                showErrorToast('Bir hata oluştu. Lütfen tekrar deneyin.');
+                console.error('Error:', error);
+            });
+        });
+
+        document.querySelector('.btn-close').addEventListener('click', function() {
+            document.getElementById('errorToast').style.display = 'none';
+        });
+    </script>
+
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+</body>

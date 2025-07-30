@@ -1,0 +1,105 @@
+﻿<!-- Views/Shared/PopUpEdit.cshtml -->
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Başvuru Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" method="post">
+                    <input type="hidden" id="editId" name="Id" />
+
+                    <div class="mb-3">
+                        <label for="projectName" class="form-label">PROJE ADI</label>
+                        <input type="text" class="form-control" id="projectName" name="projectName" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="applicantUnit" class="form-label">BAŞVURAN BİRİM</label>
+                        <select class="form-select" id="applicantUnit" name="applicantUnit">
+                            <option selected disabled>Seçiniz</option>
+                            <option value="Bilgi İşlem">Bilgi İşlem</option>
+                            <option value="İnsan Kaynakları">İnsan Kaynakları</option>
+                            <option value="Yatırım İşleri">Yatırım İşleri</option>
+                            <option value="Test">Test</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="appliedProject" class="form-label">BAŞVURU YAPILAN PROJE</label>
+                        <select class="form-select" id="appliedProject" name="appliedProject">
+                            <option selected disabled>Seçiniz</option>
+                            <option value="Erasmus">Erasmus</option>
+                            <option value="Merkezi">Merkezi</option>
+                            <option value="Avrupa">Avrupa</option>
+                            <option value="Diğer">Diğer</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="appliedType" class="form-label">BAŞVURU YAPILAN TÜR</label>
+                        <select class="form-select" id="appliedType" name="appliedType">
+                            <option selected disabled>Seçiniz</option>
+                            <option value="Gençlik">Gençlik</option>
+                            <option value="Yetişkin">Yetişkin</option>
+                            <option value="Spor">Spor</option>
+                            <option value="Mesleki">Mesleki</option>
+                            <option value="Dijital">Dijital</option>
+                            <option value="Diğer">Diğer</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="participantType" class="form-label">KATILIMCI TÜRÜ</label>
+                        <select class="form-select" id="participantType" name="participantType">
+                            <option selected disabled>Seçiniz</option>
+                            <option value="Koordinatör">Koordinatör</option>
+                            <option value="Ortak">Ortak</option>
+                            <option value="R2">R2</option>
+                            <option value="R3">R3</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="applicationPeriod" class="form-label">BAŞVURU DÖNEMİ</label>
+                        <select class="form-select" id="applicationPeriod" name="applicationPeriod">
+                            <option selected disabled>Seçiniz</option>
+                            <option value="R1">R1</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="applicationDate" class="form-label">BAŞVURU TARİHİ</label>
+                        <input type="date" class="form-control" id="applicationDate" name="applicationDate" value="2021-06-18" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="applicationState" class="form-label">BAŞVURU DURUMU</label>
+                        <select class="form-select" id="applicationState" name="applicationState">
+                            <option selected disabled>Seçiniz</option>
+                            <option value="Kabul">Kabul</option>
+                            <option value="Red">Red</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="stateDate" class="form-label">DURUM TARİHİ</label>
+                        <input type="date" class="form-control" id="stateDate" name="stateDate" value="2021-06-18" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="grantAmount" class="form-label">HİBE TUTARI</label>
+                        <input type="text" class="form-control" id="grantAmount" name="grantAmount" inputmode="numeric" pattern="[0-9]*" />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

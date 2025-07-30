@@ -1,0 +1,245 @@
+﻿@model DemoProject.Models.User
+@using DemoProject.Models
+@{
+    await Html.RenderPartialAsync("UserPopUp");
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Kullanıcılar</h5>
+        <div class="col col-lg-3 col-md-4 col-sm-4 m-auto">
+            <div class="container-fluid">
+                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#userModal">Hesap Oluştur</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>KULLANICI ADI</th>
+                        <th>E-POSTA</th>
+                        <th>PAROLA</th>
+                        <th>SİLME</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center" id="userPagination"></ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        const pageSize = 10;
+        let currentPage = 1;
+
+        $(document).ready(function () {
+            loadUsers(currentPage);
+        });
+
+        function loadUsers(page) {
+            $.ajax({
+                url: '@Url.Action("GetUsersPaged", "Home")',
+                data: { page: page, pageSize: pageSize },
+                type: 'GET',
+                dataType: "json",
+                success: function(res) {
+                    renderTable(res.users);
+                }
+            });
+        }
+
+        function renderTable(users) {
+            let tbody = $('#userTableBody');
+            tbody.empty();
+
+            if (users.length === 0) {
+                tbody.append('<tr><td colspan="5" class="text-center">Kullanıcı bulunamadı.</td></tr>');
+                return;
+            }
+
+            users.forEach(user => {
+                let isActiveText = user.IsActive ? "Aktif" : "Pasif";
+                tbody.append(`
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.kullaniciAdi}</td>
+                        <td>${user.ePosta}</td>
+                        <td>${user.parola}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Sil</button>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        function generateUserPagination(totalCount, currentPage, pageSize) {
+            const totalPages = Math.ceil(totalCount / pageSize);
+            const pagination = $('#userPagination');
+            pagination.empty();
+
+            if (totalPages <= 1) return;
+
+            pagination.append(`
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadUserPage(1)">
+                        <i class="tf-icon bx bx-chevrons-left"></i>
+                    </a>
+                </li>`);
+
+            pagination.append(`
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadUserPage(${currentPage - 1})">
+                        <i class="tf-icon bx bx-chevron-left"></i>
+                    </a>
+                </li>`);
+
+            for (let i = 1; i <= totalPages; i++) {
+                pagination.append(`
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0);" onclick="loadUserPage(${i})">${i}</a>
+                    </li>`
+                );
+            }
+
+            pagination.append(`
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadUserPage(${currentPage + 1})">
+                        <i class="tf-icon bx bx-chevron-right"></i>
+                    </a>
+                </li>`);
+
+            pagination.append(`
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadUserPage(${totalPages})">
+                        <i class="tf-icon bx bx-chevrons-right"></i>
+                    </a>
+                </li>`);
+        }
+
+        function loadUserPage(page = 1) {
+            currentPage = page;
+
+            $.ajax({
+                url: '/Home/GetUsersPaged',
+                type: 'GET',
+                cache: false,
+                data: {
+                    page: page,
+                    pageSize: pageSize
+                },
+                success: function(response) {
+                    console.log('Backend response:', response);
+
+                    if (response.error) {
+                        console.error('Backend Error:', response.message);
+                        alert('Sunucu hatası: ' + response.message);
+                        return;
+                    }
+
+                    const tbody = $('#userTableBody');
+                    tbody.empty();
+
+                    if (!response.users || response.users.length === 0) {
+                        tbody.append('<tr><td colspan="5" class="text-center">Kullanıcı bulunamadı.</td></tr>');
+                        $('#userPagination').empty();
+                        return;
+                    }
+
+                    response.users.forEach(function(user, index) {
+                        tbody.append(`
+                            <tr id="userRow_${user.id}">
+                                <td>${(page - 1) * pageSize + index + 1}</td>
+                                <td>${user.kullaniciAdi}</td>
+                                <td>${user.ePosta}</td>
+                                <td>${user.parola}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id})">Sil</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+
+                    generateUserPagination(response.totalCount, page, pageSize);
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', {
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText,
+                        error: error
+                    });
+                    alert('Kullanıcılar yüklenirken hata oluştu. Console\'u kontrol edin.');
+                }
+            });
+        }
+
+        function deleteUser(id) {
+            console.log("Silinecek ID:", id);
+            if (!confirm("Bu kullanıcıyı silmek istediğinize emin misiniz?")) return;
+
+            $.ajax({
+                url: '/Home/SoftDeleteUser',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        loadReferencePage(currentPage);
+
+                    } else {
+                        alert("Silme işlemi başarısız: " + response.message);
+                    }
+                },
+                error: function () {
+                    alert("Sunucuya bağlanırken hata oluştu.");
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('#createUserForm').submit(function (e) {
+                e.preventDefault(); 
+
+                var formData = {
+                    KullaniciAdi: $('#createUserForm input[name="KullaniciAdi"]').val(),
+                    EPosta: $('#createUserForm input[name="EPosta"]').val(),
+                    Parola: $('#createUserForm input[name="Parola"]').val()
+                };
+
+                $.ajax({
+                    url: '/Home/RegisterUserAjax',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        console.log(response);
+                        if (response.success) {
+                            $('#userModal').modal('hide'); 
+                            $('#createUserForm')[0].reset(); 
+
+                            $('#userTableBody').append(`
+                                <tr>
+                                    <td>${response.data.id}</td>
+                                    <td>${response.data.kullaniciAdi}</td>
+                                    <td>${response.data.ePosta}</td>
+                                </tr>
+                            `);
+                        } else {
+                            alert('Kayıt başarısız: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Sunucu hatası oluştu.');
+                    }
+                });
+            });
+        });
+    </script>
+}

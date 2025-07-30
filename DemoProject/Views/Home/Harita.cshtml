@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "Harita İşlemleri";
+}
+<div class="row mb-5">
+    <div class="card">
+        <div class="card-body">
+            <form id="MapOperations">
+                <div class="row row-cols-lg-5 row-cols-md-3 row-cols-2 g-3">
+                    <div class="col">
+                        <label for="arazi" class="form-label">ARAZİ</label>
+                        <select class="form-select" id="arazi" name="arazi" aria-label="Default select example">
+                            <option value="" selected>Seçiniz</option>
+                            <option value="uydu">Uydu Görünümü</option>
+                            <option value="arazi">Arazi</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="cizimSekli" class="form-label">Çizim Şekli</label>
+                        <select class="form-select" id="cizimSekli" name="cizimSekli" aria-label="Default select example">
+                            <option value="" selected>Seçiniz</option>
+                            <option value="nokta">Nokta</option>
+                            <option value="line">Çizgi</option>
+                            <option value="circle">Daire</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="cizimRengi" class="form-label">ÇİZİM RENGİ</label>
+                        <select class="form-select" id="cizimRengi" name="cizimRengi" aria-label="Default select example">
+                            <option value="#FC6C85" selected>Pembe</option>
+                            <option value="#89CFF0">Mavi</option>
+                            <option value="#B8D1AE">Yeşil</option>
+                            <option value="#FFFFFF">Beyaz</option>
+                            <option value="#000000">Siyah</option>
+                            <option value="#BF40BF">Mor</option>
+                            <option value="#FFFF81">Sarı</option>
+                            <option value="#FF4F00">Turuncu</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="searchLocation" class="form-label">YER ARAMA</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchLocation" placeholder="Şehir, ülke ara...">
+                            <button class="btn btn-outline-primary" type="button" id="searchBtn">
+                                <i class="fas fa-search"></i> Ara
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="showLabels" class="form-label">YER İSİMLERİ</label>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" id="showLabels" checked>
+                            <label class="form-check-label" for="showLabels">
+                                Göster
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 text-center">
+                        <button id="clearBtn" class="btn btn-sm btn-danger me-2">Temizle</button>
+                        <button id="clearSearchBtn" class="btn btn-sm btn-warning">Arama Temizle</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="map" style="width: 100%; height: 500px;"></div>
+
+<div id="searchResults" class="mt-3" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <h6 class="mb-0">Arama Sonuçları</h6>
+        </div>
+        <div class="card-body">
+            <div id="resultsList"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- OpenLayers CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.5.1/ol.css" />
+<!-- OpenLayers JS -->
+<script src="https://cdn.jsdelivr.net/npm/ol@v7.5.1/dist/ol.js"></script>
+<script src="~/js/map.js"></script>

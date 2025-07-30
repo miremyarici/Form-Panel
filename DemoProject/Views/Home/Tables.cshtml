@@ -1,0 +1,558 @@
+﻿@model DemoProject.Models.ViewModels.TableViewModel
+@using DemoProject.Models
+@{
+    await Html.RenderPartialAsync("PopUpEdit");
+}
+
+
+<div class="row mb-5">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-header text-center">Filtrele</h5>
+            <form id="filterForm">
+                <div class="row row-cols-5">
+                    <div class="col">
+                        <label for="projeAdi" class="form-label">PROJE ADI</label>
+                        <input class="form-control" type="text" id="projeAdi" name="projeAdi" aria-describedby="defaultFormControlHelp" />
+                    </div>
+                    <div class="col">
+                        <label for="basvuranBirim" class="form-label">BAŞVURAN BİRİM</label>
+                        <select class="form-select" id="basvuranBirim" name="basvuranBirim" aria-label="Default select example">
+                            <option value="" selected>Seçiniz</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="basvuruYapilanProje" class="form-label">BAŞVURU YAPILAN PROJE</label>
+                        <select class="form-select" id="basvuruYapilanProje" name="basvuruYapilanProje" aria-label="Default select example">
+                            <option value="" selected>Seçiniz</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="basvuruYapilanTur" class="form-label">BAŞVURU YAPILAN TÜR</label>
+                        <select class="form-select" id="basvuruYapilanTur" name="basvuruYapilanTur" aria-label="Default select example">
+                            <option value="" selected>Seçiniz</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="katilimciTuru" class="form-label">KATILIMCI TÜRÜ</label>
+                        <select class="form-select" id="katilimciTuru" name="katilimciTuru" aria-label="Default select example">
+                            <option value="" selected>Seçiniz</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="basvuruDoneme" class="form-label">BAŞVURU DÖNEMİ</label>
+                        <select class="form-select" id="basvuruDoneme" name="basvuruDoneme" aria-label="Default select example">
+                            <option value="" selected>Seçiniz</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="basvuruTarihi" class="form-label">BAŞVURU TARİHİ</label>
+                        <input class="form-control" type="date" value="2021-06-18" id="basvuruTarihi" name="basvuruTarihi" />
+                    </div>
+                    <div class="col">
+                        <label for="basvuruDurumu" class="form-label">BAŞVURU DURUMU</label>
+                        <select class="form-select" id="basvuruDurumu" name="basvuruDurumu" aria-label="Default select example">
+                            <option value="" selected>Seçiniz</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="durumTarihi" class="form-label">DURUM TARİHİ</label>
+                        <input class="form-control" type="date" value="2021-06-18" id="durumTarihi" name="durumTarihi" />
+                    </div>
+                    <div class="col">
+                        <label for="hibeTutari" class="form-label">HİBE TUTARI</label>
+                        <input class="form-control" type="text" id="hibeTutari" name="hibeTutari" aria-describedby="defaultFormControlHelp" />
+                    </div>
+                </div>
+                <div class="col col-lg-3 col-md-4 col-sm-4 m-auto">
+                    <div class="container-fluid">
+                        <button id="filterBtn" class="btn btn-primary w-100">Filtrele</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col col-lg-6 col-md-4 col-sm-4">
+                    <h5 class="card-header">Başvuru Listesi</h5>
+                </div>
+                <div class="col col-lg-3 col-md-4 col-sm-4 m-auto">
+                    <div class="container-fluid">
+                        <button type="button" class="btn btn-primary w-100" onclick="ListApplications()">Listele</button>
+                    </div>
+                </div>
+                <div class="col col-lg-3 col-md-4 col-sm-4 m-auto">
+                    <div class="container-fluid">
+                        <button type="button" class="btn btn-primary w-100" onclick="exportFilteredToExcel()">Excele Aktar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>PROJE ADI</th>
+                            <th>BAŞVURAN BİRİM</th>
+                            <th>BAŞVURU YAPILAN PROJE</th>
+                            <th>BAŞVURU YAPILAN TÜR</th>
+                            <th>KATILIMCI TÜRÜ</th>
+                            <th>BAŞVURU DÖNEMİ</th>
+                            <th>BAŞVURU DURUMU</th>
+                            <th>BAŞVURU TARİHİ</th>
+                            <th>DURUM TARİHİ</th>
+                            <th>HİBE TUTARI</th>
+                            <th>İŞLEMLER</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0" id="applicationTableBody"></tbody>
+                </table>
+            </div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-auto">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination" id="pagination">
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                İlgili satırı silmek istiyor musunuz?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Hayır</button>
+                <button type="button" class="btn btn-success" id="confirmDeleteBtn">Evet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let currentFilters = {};
+    let currentPage = 1;
+    let selectedItemId = null;
+    let selectedRow = null;
+
+    $(document).ready(function () {
+        console.log("Sayfa yüklendi, referanslar getiriliyor...");
+
+        $.ajax({
+            url: '/Home/GetReferences',
+            type: 'GET',
+            success: function(response) {
+                console.log("GetReferences response:", response);
+
+                if (response.success && response.data && response.data.length > 0) {
+                    populateDropdown('basvuranBirim', 'BASVURAN_BIRIM', response.data);
+                    populateDropdown('basvuruYapilanProje', 'BASVURU_PROJE', response.data);
+                    populateDropdown('basvuruYapilanTur', 'BASVURU_TUR', response.data);
+                    populateDropdown('katilimciTuru', 'KATILIMCI_TURU', response.data);
+                    populateDropdown('basvuruDoneme', 'BASVURU_DONEMI', response.data);
+                    populateDropdown('basvuruDurumu', 'BASVURU_DURUMU', response.data);
+
+                    console.log("Dropdown'lar dolduruldu");
+                } else {
+                    console.error("Referans verileri alınamadı:", response);
+                    alert("Referans verileri alınamadı.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX hatası:", error);
+                console.error("Status:", status);
+                console.error("Response:", xhr.responseText);
+                alert("Sunucu hatası oluştu: " + error);
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#filterBtn').click(function (e) {
+            e.preventDefault();
+             currentFilters = {
+                projectName: $('#projeAdi').val(),
+                applicantUnit: $('#basvuranBirim').val(),
+                appliedProject: $('#basvuruYapilanProje').val(),
+                appliedType: $('#basvuruYapilanTur').val(),
+                participantType: $('#katilimciTuru').val(),
+                applicationPeriod: $('#basvuruDoneme').val(),
+                applicationDate: $('#basvuruTarihi').val(),
+                applicationState: $('#basvuruDurumu').val(),
+                stateDate: $('#durumTarihi').val(),
+                grantAmount: $('#hibeTutari').val()
+            };
+            filterWithPage(1);
+        });
+    });
+
+    function populateDropdown(dropdownId, referenceType, data) {
+        console.log(`${dropdownId} dropdownu dolduruluyor, referenceType: ${referenceType}`);
+
+        var dropdown = $('#' + dropdownId);
+        var filteredData = data.filter(function(item) {
+            return item.referenceType === referenceType || item.ReferenceType === referenceType;
+        });
+
+        console.log(`${referenceType} için filtrelenmiş veri:`, filteredData);
+
+        filteredData.forEach(function(item) {
+            var value = item.referenceValue || item.ReferenceValue;
+            if (dropdown.find('option[value="' + value + '"]').length === 0) {
+                 dropdown.append('<option value="' + value + '">' + value + '</option>');
+            }
+        });
+
+        console.log(`${dropdownId} dropdownuna, ${filteredData.length} seçenek eklendi`);
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = ('0' + date.getDate()).slice(-2);
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const year = date.getFullYear();
+        return `${day}.${month}.${year}`;
+    }
+
+    function ListApplications(page = 1) {
+        currentPage = page;
+        const pageSize = 10;
+         currentFilters = {};
+
+        $.ajax({
+            url: '/Home/GetApplicationsPaged',
+            type: 'GET',
+            data: { page: page, pageSize: pageSize },
+            success: function(response) {
+                console.log("GetApplicationsPaged response:", response);
+
+                if (response.data && response.data.length >= 0) {
+                    const tableBody = $('#applicationTableBody');
+                    tableBody.empty();
+
+                    response.data.forEach(function(item, index) {
+                        var row = `<tr>
+                            <td>${(page - 1) * pageSize + index + 1}</td>
+                            <td>${item.projectName || ''}</td>
+                            <td>${item.applicantUnit || ''}</td>
+                            <td>${item.appliedProject || ''}</td>
+                            <td>${item.appliedType || ''}</td>
+                            <td>${item.participantType || ''}</td>
+                            <td>${item.applicationPeriod || ''}</td>
+                            <td>${item.applicationState || ''}</td>
+                            <td>${item.applicationDate ? formatDate(item.applicationDate) : ''}</td>
+                            <td>${item.stateDate ? formatDate(item.stateDate) : ''}</td>
+                            <td>${item.grantAmount || ''}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                    <a class="dropdown-item dropdown-item-edit"
+                                    href="javascript:void(0);"
+                                    data-id="${item.id}">
+                                        <i class="bx bx-edit-alt me-1"></i> Düzenle
+                                    </a>
+                                        <a class="dropdown-item dropdown-item-delete" href="javascript:void(0);" data-id="${item.id}">
+                                            <i class="bx bx-trash me-1"></i> Sil
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`;
+                        tableBody.append(row);
+                    });
+
+                    generatePagination(response.totalCount, page, pageSize, false);
+                } else {
+                    console.error("Veri alınamadı:", response);
+                    alert("Veriler alınamadı.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("ListApplications AJAX hatası:", error);
+                alert("Sunucu hatası oluştu: " + error);
+            }
+        });
+    }
+
+    function filterWithPage(page) {
+        currentPage = page;
+        const pageSize = 10;
+        const filtersToSend = {
+            ...currentFilters,
+            page: page,
+            pageSize: pageSize
+        };
+
+        $.ajax({
+            url: '/Home/FilterApplicationsPaged',
+            type: 'GET',
+            data: filtersToSend,
+            success: function (response) {
+                const data = response.data;
+                const tableBody = $('#applicationTableBody');
+                tableBody.empty();
+
+                if (data.length === 0) {
+                    tableBody.append('<tr><td colspan="12" class="text-center">Veri bulunamadı.</td></tr>');
+                    $('#pagination').empty();
+                    return;
+                }
+
+                data.forEach(function (item, index) {
+                    const row = `
+                        <tr>
+                            <td>${(page - 1) * pageSize + index + 1}</td>
+                            <td>${item.projectName || ''}</td>
+                            <td>${item.applicantUnit || ''}</td>
+                            <td>${item.appliedProject || ''}</td>
+                            <td>${item.appliedType || ''}</td>
+                            <td>${item.participantType || ''}</td>
+                            <td>${item.applicationPeriod || ''}</td>
+                            <td>${item.applicationState || ''}</td>
+                            <td>${item.applicationDate ? formatDate(item.applicationDate) : ''}</td>
+                            <td>${item.stateDate ? formatDate(item.stateDate) : ''}</td>
+                            <td>${item.grantAmount ?? ''}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="javascript:void(0);">
+                                            <i class="bx bx-edit-alt me-1"></i> Düzenle
+                                        </a>
+                                        <a class="dropdown-item dropdown-item-delete" href="javascript:void(0);" data-id="${item.id}">
+                                            <i class="bx bx-trash me-1"></i> Sil
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`;
+                    tableBody.append(row);
+                });
+
+                generatePagination(response.totalCount, page, pageSize, true);
+            },
+            error: function () {
+                alert('Filtreleme sırasında bir hata oluştu.');
+            }
+        });
+    }
+
+    function exportFilteredToExcel() {
+        const filters = {
+            projectName: $('#projeAdi').val(),
+            applicantUnit: $('#basvuranBirim').val(),
+            appliedProject: $('#basvuruYapilanProje').val(),
+            appliedType: $('#basvuruYapilanTur').val(),
+            participantType: $('#katilimciTuru').val(),
+            applicationPeriod: $('#basvuruDoneme').val(),
+            applicationDate: $('#basvuruTarihi').val(),
+            applicationState: $('#basvuruDurumu').val(),
+            stateDate: $('#durumTarihi').val(),
+            grantAmount: $('#hibeTutari').val()
+        };
+        const query = $.param(filters);
+
+        window.location.href = '/Home/ExportToExcel?' + query;
+    }
+
+    function loadApplications(page) {
+        if (Object.keys(currentFilters).length > 0) {
+            filterWithPage(page);
+        } else {
+            ListApplications(page);
+        }
+    }
+
+    function generatePagination(totalCount, currentPage, pageSize, isFiltered = false) {
+        const totalPages = Math.ceil(totalCount / pageSize);
+        const pagination = $('#pagination');
+        pagination.empty(); 
+
+        if (totalPages <= 1) return;
+
+        const pageFunc = isFiltered ? 'filterWithPage' : 'ListApplications';
+
+        pagination.append(`
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="javascript:void(0);" onclick="${pageFunc}(1)">
+                    <i class="tf-icon bx bx-chevrons-left"></i>
+                </a>
+            </li>`);
+
+        pagination.append(`
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="javascript:void(0);" onclick="${pageFunc}(${currentPage - 1})">
+                    <i class="tf-icon bx bx-chevron-left"></i>
+                </a>
+            </li>`);
+
+        for (let i = 1; i <= totalPages; i++) {
+            pagination.append(`
+                <li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" href="javascript:void(0);" onclick="${pageFunc}(${i})">${i}</a>
+                </li>`);
+        }
+
+        pagination.append(`
+            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="javascript:void(0);" onclick="${pageFunc}(${currentPage + 1})">
+                    <i class="tf-icon bx bx-chevron-right"></i>
+                </a>
+            </li>`);
+
+        pagination.append(`
+            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="javascript:void(0);" onclick="${pageFunc}(${totalPages})">
+                    <i class="tf-icon bx bx-chevrons-right"></i>
+                </a>
+            </li>`);
+    }
+
+    $(document).on('click', '.dropdown-item-delete', function () {
+        selectedItemId = $(this).data('id');
+        selectedRow = $(this).closest('tr');
+
+        console.log('Seçilen ID:', selectedItemId);
+        console.log('ID tipi:', typeof selectedItemId);
+        console.log('data-id attribute:', $(this).attr('data-id'));
+
+        if (!selectedItemId) {
+            alert('ID bulunamadı!');
+            return;
+        }
+
+        $('#deleteConfirmModal').modal('show');
+    });
+
+    $('#confirmDeleteBtn').on('click', function () {
+        if (selectedItemId !== null) {
+            console.log('Gönderilen ID:', selectedItemId);
+
+            $.ajax({
+                url: '/Home/SoftDeleteApplication',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({id: selectedItemId}),
+                success: function (response) {
+                    console.log('Response:', response);
+
+                    if (response.success) {
+                        selectedRow.remove();
+                        $('#deleteConfirmModal').modal('hide');
+                        alert('Başvuru başarıyla silindi!');
+
+                        loadApplications(currentPage);
+                    } else {
+                        alert("Silme işlemi başarısız: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('AJAX Error:', xhr.responseText);
+                    alert("Silme işlemi sırasında hata oluştu: " + error);
+                }
+            });
+        } else {
+            alert('Seçili kayıt bulunamadı!');
+        }
+    });
+
+	$(document).on('click', '.dropdown-item-edit', function () {
+        const id = $(this).data('id');
+
+        $.ajax({
+            url: '/Home/GetApplicationById',
+            type: 'GET',
+            data: { id: id },
+            success: function (data) {
+                if (data) {
+                    $('#editId').val(data.id);
+                    $('#editProjectName').val(data.projectName);
+                    $('#editApplicantUnit').val(data.applicantUnit);
+
+                    $('#editModal').modal('show');
+                } else {
+                    alert('Kayıt bulunamadı.');
+                }
+            },
+            error: function () {
+                alert('Sunucu hatası oluştu.');
+            }
+        });
+    });
+
+	$('#editForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const formData = $(this).serialize();
+
+        $.ajax({
+            url: '/Home/UpdateApplication',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    $('#editModal').modal('hide');
+                    ListApplications();
+                } else {
+                    alert("Güncelleme başarısız.");
+                }
+            },
+            error: function () {
+                alert("Sunucu hatası oluştu.");
+            }
+        });
+    });
+
+    $(document).on('click', '.dropdown-item-edit', function () {
+        const id = $(this).data('id');
+        openEditModal(id); 
+    });
+
+    function openEditModal(id) {
+        $.ajax({
+            url: '/Home/GetApplicationById',
+            type: 'GET',
+            data: { id: id },
+            success: function (data) {
+                if (data) { 
+                    $('#editId').val(data.id);
+                    $('#projectName').val(data.projectName); 
+                    $('#applicantUnit').val(data.applicantUnit); 
+                    $('#appliedProject').val(data.appliedProject); 
+                    $('#appliedType').val(data.appliedType); 
+                    $('#participantType').val(data.participantType); 
+                    $('#applicationPeriod').val(data.applicationPeriod); 
+                    $('#applicationDate').val(data.applicationDate ? data.applicationDate.split('T')[0] : ''); 
+                    $('#applicationState').val(data.applicationState); 
+                    $('#stateDate').val(data.stateDate ? data.stateDate.split('T')[0] : ''); 
+                    $('#grantAmount').val(data.grantAmount); 
+
+                    $('#editModal').modal('show');
+                } else {
+                    alert("Kayıt bulunamadı.");
+                }
+            },
+            error: function () {
+                alert("Veri alınamadı.");
+            }
+        });
+    }
+</script>

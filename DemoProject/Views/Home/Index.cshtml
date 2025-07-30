@@ -1,0 +1,175 @@
+﻿@model DemoProject.Models.ViewModels.TableViewModel
+
+<div class="row">
+	<div class="col-lg-8 mb-4 order-0">
+		<div class="card">
+			<div class="card-body">
+				<h3 class="card-title h3 text-center mb-3">Başvuru Formu</h3>
+
+				<form id="frmBasvuruFormu">
+					<div class="row mb-3">
+						<div class="col col-12">
+							<label for="projectName" class="form-label">PROJE ADI</label>
+							<input type="text" class="form-control" id="projectName" name="projectName" />
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col col-12">
+							<label for="applicantUnit" class="form-label">BAŞVURAN BİRİM</label>
+							<select class="form-select" id="applicantUnit" name="applicantUnit">
+								<option selected disabled>Seçiniz</option>
+							</select>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col col-12">
+							<label for="appliedProject" class="form-label">BAŞVURU YAPILAN PROJE</label>
+							<select class="form-select" id="appliedProject" name="appliedProject" aria-label="Default select example">
+								<option selected disabled>Seçiniz</option>
+							</select>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col col-12">
+							<label for="appliedType" class="form-label">BAŞVURU YAPILAN TÜR</label>
+							<select class="form-select" id="appliedType" name="appliedType" aria-label="Default select example">
+								<option selected disabled>Seçiniz</option>
+							</select>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col col-12">
+							<label for="participantType" class="form-label">KATILIMCI TÜRÜ</label>
+							<select class="form-select" id="participantType" name="participantType" aria-label="Default select example">
+								<option selected disabled>Seçiniz</option>
+							</select>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col col-12">
+							<label for="applicationPeriod" class="form-label">BAŞVURU DÖNEMİ</label>
+							<select class="form-select" id="applicationPeriod" name="applicationPeriod" aria-label="Default select example">
+								<option selected disabled>Seçiniz</option>
+							</select>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col col-12">
+							<label for="applicationDate" class="col-form-label">BAŞVURU TARİHİ</label>
+							<input class="form-control" type="date" value="2021-06-18" id="applicationDate" name="applicationDate" />
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col col-12">
+							<label for="applicationState" class="form-label">BAŞVURU DURUMU</label>
+							<select class="form-select" id="applicationState" name="applicationState" aria-label="Default select example">
+								<option selected disabled>Seçiniz</option>
+							</select>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-md-12">
+							<label for="stateDate" class="col-form-label">DURUM TARİHİ</label>
+							<input class="form-control" type="date" value="2021-06-18" id="stateDate" name="stateDate" />
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col col-12">
+							<label for="grantAmount" class="form-label">HİBE TUTARI</label>
+							<input type="text" class="form-control" id="grantAmount" name="grantAmount" inputmode="numeric" pattern="[0-9]*" />
+						</div>
+					</div>
+					<div class="text-center">
+						<button type="submit" class="btn btn-outline-secondary px-4">Kaydet</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	function sendApplicationForm() {
+		console.log("sendApplicationForm function called");
+
+		var grantAmountRaw = $('#grantAmount').val().replace(',', '.').replace(/[^0-9.]/g, '');
+		var grantAmount = grantAmountRaw ? parseFloat(grantAmountRaw) : null;
+
+		var formData = {
+			projectName: $('#projectName').val(),
+			applicantUnit: $('#applicantUnit').val(),
+			appliedProject: $('#appliedProject').val(),
+			appliedType: $('#appliedType').val(),
+			participantType: $('#participantType').val(),
+			applicationPeriod: $('#applicationPeriod').val(),
+			applicationDate: $('#applicationDate').val(),
+			applicationState: $('#applicationState').val(),
+			stateDate: $('#stateDate').val(),
+			grantAmount: grantAmount
+		};
+
+		console.log("Form Data:", formData);
+
+		$.ajax({
+			type: 'POST',
+			url: '/Home/sendApplicationForm',
+			contentType: 'application/json',
+			data: JSON.stringify(formData),
+			success: function (data) {
+				console.log('Success response:', data);
+				if (data.success) {
+					alert('✅ ' + data.message);
+					$('#frmBasvuruFormu')[0].reset();
+				} else {
+					alert('❌ ' + data.message);
+				}
+			},
+			error: function (xhr, status, error) {
+				console.log('Error response:', xhr.responseText);
+				alert('❌ Bir hata oluştu: ' + xhr.responseText);
+			}
+		});
+	}
+
+	$(document).ready(function () {
+		$('#frmBasvuruFormu').on('submit', function (e) {
+			e.preventDefault();
+			sendApplicationForm();
+		});
+	});
+
+	 $(document).ready(function () {
+			$('#frmBasvuruFormu').on('submit', function (e) {
+				e.preventDefault();
+				sendApplicationForm();
+			});
+
+			loadReferenceOptions('BASVURAN_BIRIM', 'applicantUnit');
+			loadReferenceOptions('BASVURU_PROJE', 'appliedProject');
+			loadReferenceOptions('BASVURU_TUR', 'appliedType');
+			loadReferenceOptions('KATILIMCI_TURU', 'participantType');
+			loadReferenceOptions('BASVURU_DONEMI', 'applicationPeriod');
+			loadReferenceOptions('BASVURU_DURUMU', 'applicationState');
+		});
+
+
+	function loadReferenceOptions(referenceType, selectId) {
+		$.ajax({
+			url: '/Home/GetReferenceOptions',
+			type: 'GET',
+			data: { referenceType: referenceType },
+			success: function (data) {
+				let select = $('#' + selectId);
+				select.empty();
+				select.append('<option selected disabled>Seçiniz</option>');
+				$.each(data, function (index, item) {
+					select.append('<option value="' + item + '">' + item + '</option>');
+				});
+			},
+			error: function (xhr, status, error) {
+				console.error('Dropdown yüklenemedi:', selectId, error);
+			}
+		});
+	}
+</script>

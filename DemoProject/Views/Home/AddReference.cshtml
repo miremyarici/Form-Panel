@@ -1,0 +1,120 @@
+﻿@model DemoProject.Models.ViewModels.TableViewModel
+@using DemoProject.Models
+
+<div class="row mb-5">
+    <div class="card">
+        <div class="card-body">
+            <form id="filterForm">
+                <div class="row row-cols-5">
+                    <div class="col">
+                        <label for="referansTipi" class="form-label">REFERANS TİPİ</label>
+                        <select class="form-select" id="referansTipi" name="referansTipi">
+                            <option value="" selected>Seçiniz</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="referansId" class="form-label">REFERANS ID</label>
+                        <input class="form-control" type="text" id="referansId" name="referansId" />
+                    </div>
+                    <div class="col">
+                        <label for="referansDegeri" class="form-label">REFERANS DEĞERİ</label>
+                        <input class="form-control" type="text" id="referansDegeri" name="referansDegeri" />
+                    </div>
+                </div>
+                <div class="col col-lg-3 col-md-4 col-sm-4 m-auto">
+                    <div class="container-fluid">
+                        <button id="addReference" type="button" class="btn btn-primary w-100">Referans Ekle</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            loadReferenceTypes();
+
+            $('#addReference').click(function (e) {
+                e.preventDefault();
+                addReference();
+            });
+        });
+
+        function loadReferenceTypes() {
+            $.ajax({
+                url: '/Home/GetReferenceTypes',
+                type: 'GET',
+                success: function (data) {
+                    var dropdown = $('#referansTipi');
+                    dropdown.empty();
+                    dropdown.append('<option value="">Seçiniz</option>');
+                    $.each(data, function (i, item) {
+                        dropdown.append('<option value="' + item + '">' + item + '</option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Referans tipleri yüklenemedi:', error);
+                    alert("Referans tipleri yüklenemedi. Hata: " + error);
+                }
+            });
+        }
+
+        function addReference() {
+            const referenceType = $('#referansTipi').val();
+            const referenceKey = $('#referansId').val();
+            const referenceValue = $('#referansDegeri').val();
+
+            if (!referenceType || !referenceKey || !referenceValue) {
+                alert('Lütfen tüm alanları doldurunuz.');
+                return;
+            }
+
+            const data = {
+                ReferenceType: referenceType,
+                ReferenceKey: referenceKey,
+                ReferenceValue: referenceValue,
+                IsActive: true
+            };
+
+            console.log('Gönderilen veri:', data);
+
+            $.ajax({
+                url: '/Home/AddReference',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    console.log('Başarılı response:', response);
+                    alert('Referans başarıyla eklendi! ID: ' + response.id);
+
+                    clearForm();
+
+                    loadReferenceTypes();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Hata:', xhr.responseText);
+                    let errorMessage = "Referans eklenirken hata oluştu.";
+
+                    if (xhr.responseText) {
+                        try {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            errorMessage = errorResponse.message || xhr.responseText;
+                        } catch (e) {
+                            errorMessage = xhr.responseText;
+                        }
+                    }
+
+                    alert("Hata: " + errorMessage);
+                }
+            });
+        }
+
+        function clearForm() {
+            $('#referansTipi').val('');
+            $('#referansId').val('');
+            $('#referansDegeri').val('');
+        }
+    </script>
+}

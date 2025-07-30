@@ -1,0 +1,35 @@
+﻿@model DemoProject.Models.User
+
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Hesap Oluştur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createUserForm">
+                    <div class="mb-3">
+                        <label asp-for="KullaniciAdi" class="form-label"></label>
+                        <input asp-for="KullaniciAdi" class="form-control" placeholder="Kullanıcı adı giriniz" />
+                        <span asp-validation-for="KullaniciAdi" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="EPosta" class="form-label"></label>
+                        <input asp-for="EPosta" class="form-control" placeholder="E-Posta adresinizi giriniz" />
+                        <span asp-validation-for="EPosta" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3 form-password-toggle">
+                        <label asp-for="Parola" class="form-label"></label>
+                        <div class="input-group input-group-merge">
+                            <input asp-for="Parola" type="password" class="form-control" placeholder="••••••••••" />
+                            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        </div>
+                        <span asp-validation-for="Parola" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary d-grid w-100">Hesap Oluştur</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
